@@ -34,7 +34,7 @@ func TestIsEnabled(t *testing.T) {
 		},
 		{
 			name:        "When the accessibility configuration is unset and the ACCESSIBLE env var returns 'false', it should return false",
-			envVarValue: "0",
+			envVarValue: "false",
 			cfgStr:      "",
 			wantOut:     false,
 		},
@@ -58,7 +58,7 @@ func TestIsEnabled(t *testing.T) {
 		},
 		{
 			name:        "When the accessibility configuration is set to enabled and the env var is set to '0', it should return false",
-			envVarValue: "false",
+			envVarValue: "0",
 			cfgStr:      accessibilityEnabledConfig(),
 			wantOut:     false,
 		},
@@ -71,7 +71,7 @@ func TestIsEnabled(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			t.Setenv("ACCESSIBILITY", tt.envVarValue)
+			t.Setenv("GH_ACCESSIBILE", tt.envVarValue)
 			testutils.StubConfig(t, tt.cfgStr)
 			assert.Equal(t, tt.wantOut, IsEnabled())
 		})
