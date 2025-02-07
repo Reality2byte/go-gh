@@ -8,12 +8,13 @@ import (
 	"testing"
 	"time"
 
+	"github.com/cli/go-gh/v2/internal/testutils"
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/h2non/gock.v1"
 )
 
 func TestRESTClient(t *testing.T) {
-	stubConfig(t, testConfig())
+	testutils.StubConfig(t, testConfig())
 	t.Cleanup(gock.Off)
 
 	gock.New("https://api.github.com").
