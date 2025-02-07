@@ -10,7 +10,7 @@ import (
 // accessibility features. If the value is empty, "0", or "false", the accessibility
 // features are disabled. Any other value enables the accessibility features. Note that
 // this environment variable supercedes the configuration file's accessible setting.
-const ACCESSIBILITY_ENV = "GH_ACCESSIBILE"
+const ACCESSIBILITY_ENV = "ACCESSIBILE"
 
 // IsEnabled returns true if accessibility features are enabled via the ACCESSIBILITY
 // environment variable or the configuration file.
