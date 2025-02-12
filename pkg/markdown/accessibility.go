@@ -54,8 +54,7 @@ func accessibleDarkStyleConfig() ansi.StyleConfig {
 	cfg.Document.StylePrimitive.Color = White.StrPtr()
 
 	// Link colors
-	cfg.Link.Color = Black.StrPtr()
-	cfg.LinkText.Color = BrightCyan.StrPtr()
+	cfg.Link.Color = BrightCyan.StrPtr()
 
 	// Heading colors
 	cfg.Heading.StylePrimitive.Color = BrightMagenta.StrPtr()
@@ -82,8 +81,7 @@ func accessibleLightStyleConfig() ansi.StyleConfig {
 	cfg.Document.StylePrimitive.Color = Black.StrPtr()
 
 	// Link colors
-	cfg.Link.Color = Black.StrPtr()
-	cfg.LinkText.Color = BrightBlue.StrPtr()
+	cfg.Link.Color = BrightBlue.StrPtr()
 
 	// Heading colors
 	cfg.Heading.StylePrimitive.Color = Magenta.StrPtr()

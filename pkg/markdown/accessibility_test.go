@@ -88,8 +88,7 @@ func TestAccessibleStyleConfig(t *testing.T) {
 func Test_accessibleDarkStyleConfig(t *testing.T) {
 	cfg := accessibleDarkStyleConfig()
 	assert.Equal(t, White.StrPtr(), cfg.Document.StylePrimitive.Color)
-	assert.Equal(t, Black.StrPtr(), cfg.Link.Color)
-	assert.Equal(t, BrightCyan.StrPtr(), cfg.LinkText.Color)
+	assert.Equal(t, BrightCyan.StrPtr(), cfg.Link.Color)
 	assert.Equal(t, BrightMagenta.StrPtr(), cfg.Heading.StylePrimitive.Color)
 	assert.Equal(t, BrightWhite.StrPtr(), cfg.H1.StylePrimitive.Color)
 	assert.Equal(t, BrightBlue.StrPtr(), cfg.H1.StylePrimitive.BackgroundColor)
@@ -105,8 +104,7 @@ func Test_accessibleDarkStyleConfig(t *testing.T) {
 func Test_accessibleLightStyleConfig(t *testing.T) {
 	cfg := accessibleLightStyleConfig()
 	assert.Equal(t, Black.StrPtr(), cfg.Document.StylePrimitive.Color)
-	assert.Equal(t, Black.StrPtr(), cfg.Link.Color)
-	assert.Equal(t, BrightBlue.StrPtr(), cfg.LinkText.Color)
+	assert.Equal(t, BrightBlue.StrPtr(), cfg.Link.Color)
 	assert.Equal(t, Magenta.StrPtr(), cfg.Heading.StylePrimitive.Color)
 	assert.Equal(t, BrightWhite.StrPtr(), cfg.H1.StylePrimitive.Color)
 	assert.Equal(t, Blue.StrPtr(), cfg.H1.StylePrimitive.BackgroundColor)
