@@ -41,6 +41,7 @@ func WithTheme(theme string) glamour.TermRendererOption {
 			style = "notty"
 		}
 	}
+
 	return glamour.WithStylePath(style)
 }
 
