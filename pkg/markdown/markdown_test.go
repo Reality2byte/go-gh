@@ -4,21 +4,27 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/cli/go-gh/v2/pkg/accessibility"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 // glamour theme colors found at https://github.com/charmbracelet/glamour/tree/master/styles
 const (
-	glamourLightH2Color     = "27"
-	glamourDarkH2Color      = "39"
-	customH2Color           = "61"
-	magentaEscapeCode       = "35"
-	brightMagentaEscapeCode = "95"
+	glamourLightH2_8bitColorSeq = "\x1b[38;5;27;"
+	glamourDarkH2_8bitColorSeq  = "\x1b[38;5;39;"
+	customH2_8bitColorSeq       = "\x1b[38;5;61;"
+	magenta_4bitColorSeq        = "\x1b[35;"
+	brightMagenta_4bitColorSeq  = "\x1b[95;"
 )
 
+// Test_Render verifies that the proper ANSI color codes are applied to the rendered
+// markdown by examining the ANSI escape sequences in the output for the correct color
+// match. For more information on ANSI color codes, see
+// https://en.wikipedia.org/wiki/ANSI_escape_code#8-bit
 func Test_Render(t *testing.T) {
 	t.Setenv("GLAMOUR_STYLE", "")
 	tests := []struct {
@@ -30,43 +36,43 @@ func Test_Render(t *testing.T) {
 		wantOut          string
 	}{
 		{
-			name:    "light style",
+			name:    "when the light theme is selected, the h2 renders using the 8-bit blue 27 provided by glamour",
 			text:    "## h2",
 			theme:   "light",
-			wantOut: fmt.Sprintf("\x1b[0m\x1b[38;5;%s;1mh2", glamourLightH2Color),
+			wantOut: fmt.Sprintf("%s1mh2", glamourLightH2_8bitColorSeq),
 		},
 		{
-			name:    "dark style",
+			name:    "when the dark theme is selected, the h2 renders using the 8-bit blue 39 provided by glamour",
 			text:    "## h2",
 			theme:   "dark",
-			wantOut: fmt.Sprintf("\x1b[0m\x1b[38;5;%s;1mh2", glamourDarkH2Color),
+			wantOut: fmt.Sprintf("%s1mh2", glamourDarkH2_8bitColorSeq),
 		},
 		{
-			name:    "notty style",
+			name:    "when no theme is selected, the h2 renders in plain text without ansi coloring",
 			text:    "## h2",
 			theme:   "none",
-			wantOut: "## h2", // no tty should maintain the original text
+			wantOut: "## h2",
 		},
 		{
-			name:        "when the style env var is set, we override the theme whith that style",
+			name:        "when the style env var is set, we override the theme with that style",
 			text:        "## h2",
 			theme:       "light",
 			styleEnvVar: "customStyle",
-			wantOut:     fmt.Sprintf("\x1b[0m\x1b[38;5;%s;1mh2", customH2Color),
+			wantOut:     fmt.Sprintf("%s1mh2", customH2_8bitColorSeq),
 		},
 		{
-			name:             "when the accessible env var is set and the light theme is selected, we use the light accessible style",
+			name:             "when the accessible env var is set and the light theme is selected, the h2 renders using the 4-bit magenta provided by the light accessible style",
 			text:             "## h2",
 			theme:            "light",
 			accessibleEnvVar: "true",
-			wantOut:          fmt.Sprintf("\x1b[0m\x1b[%s;1mh2", magentaEscapeCode),
+			wantOut:          fmt.Sprintf("%s1mh2", magenta_4bitColorSeq),
 		},
 		{
-			name:             "when the accessible env var is set and the dark theme is selected, we use the dark accessible style",
+			name:             "when the accessible env var is set and the dark theme is selected, the h2 renders using the 4-bit bright magenta provided by the dark accessible style",
 			text:             "## h2",
 			theme:            "dark",
 			accessibleEnvVar: "true",
-			wantOut:          fmt.Sprintf("\x1b[0m\x1b[%s;1mh2", brightMagentaEscapeCode),
+			wantOut:          fmt.Sprintf("%s1mh2", brightMagenta_4bitColorSeq),
 		},
 	}
 	for _, tt := range tests {
@@ -84,7 +90,7 @@ func Test_Render(t *testing.T) {
 			}
 
 			out, err := Render(tt.text, WithTheme(tt.theme))
-			assert.NoError(t, err)
+			require.NoError(t, err)
 			assert.Contains(t, out, tt.wantOut)
 		})
 	}
@@ -92,6 +98,7 @@ func Test_Render(t *testing.T) {
 
 func customGlamourStyle(t *testing.T) string {
 	t.Helper()
+	colorCode := strings.Split(customH2_8bitColorSeq, ";")[2]
 	return fmt.Sprintf(`
 {
 	"heading": {
@@ -102,5 +109,5 @@ func customGlamourStyle(t *testing.T) string {
 	"h2": {
 		"prefix": "## "
 	}
-}`, customH2Color)
+}`, colorCode)
 }

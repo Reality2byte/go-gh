@@ -7,10 +7,10 @@ import (
 	"github.com/charmbracelet/glamour/ansi"
 )
 
-type AnsiColor int
+type ANSIColorCode int
 
 const (
-	Black AnsiColor = iota
+	Black ANSIColorCode = iota
 	Red
 	Green
 	Yellow
@@ -28,33 +28,12 @@ const (
 	BrightWhite
 )
 
-func (a AnsiColor) Name() string {
-	return [...]string{
-		"black",
-		"red",
-		"green",
-		"yellow",
-		"blue",
-		"magenta",
-		"cyan",
-		"white",
-		"brightBlack",
-		"brightRed",
-		"brightGreen",
-		"brightYellow",
-		"brightBlue",
-		"brightMagenta",
-		"brightCyan",
-		"brightWhite",
-	}[a]
-}
-
-func (a AnsiColor) Value() string {
+func (a ANSIColorCode) String() string {
 	return strconv.Itoa(int(a))
 }
 
-func (a AnsiColor) ValuePtr() *string {
-	return strPtr(a.Value())
+func (a ANSIColorCode) StrPtr() *string {
+	return strPtr(a.String())
 }
 
 func AccessibleStyleConfig(theme string) ansi.StyleConfig {
@@ -72,26 +51,26 @@ func accessibleDarkStyleConfig() ansi.StyleConfig {
 	cfg := glamour.DarkStyleConfig
 
 	// Text color
-	cfg.Document.StylePrimitive.Color = White.ValuePtr()
+	cfg.Document.StylePrimitive.Color = White.StrPtr()
 
 	// Link colors
-	cfg.Link.Color = Black.ValuePtr()
-	cfg.LinkText.Color = BrightCyan.ValuePtr()
+	cfg.Link.Color = Black.StrPtr()
+	cfg.LinkText.Color = BrightCyan.StrPtr()
 
 	// Heading colors
-	cfg.Heading.StylePrimitive.Color = BrightMagenta.ValuePtr()
-	cfg.H1.StylePrimitive.Color = BrightWhite.ValuePtr()
-	cfg.H1.StylePrimitive.BackgroundColor = BrightBlue.ValuePtr()
+	cfg.Heading.StylePrimitive.Color = BrightMagenta.StrPtr()
+	cfg.H1.StylePrimitive.Color = BrightWhite.StrPtr()
+	cfg.H1.StylePrimitive.BackgroundColor = BrightBlue.StrPtr()
 
 	// Code colors
-	cfg.Code.BackgroundColor = BrightWhite.ValuePtr()
-	cfg.Code.Color = Red.ValuePtr()
+	cfg.Code.BackgroundColor = BrightWhite.StrPtr()
+	cfg.Code.Color = Red.StrPtr()
 
 	// Image colors
-	cfg.Image.Color = BrightMagenta.ValuePtr()
+	cfg.Image.Color = BrightMagenta.StrPtr()
 
 	// Horizontal rule colors
-	cfg.HorizontalRule.Color = White.ValuePtr()
+	cfg.HorizontalRule.Color = White.StrPtr()
 
 	return cfg
 }
@@ -100,26 +79,26 @@ func accessibleLightStyleConfig() ansi.StyleConfig {
 	cfg := glamour.LightStyleConfig
 
 	// Text color
-	cfg.Document.StylePrimitive.Color = Black.ValuePtr()
+	cfg.Document.StylePrimitive.Color = Black.StrPtr()
 
 	// Link colors
-	cfg.Link.Color = Black.ValuePtr()
-	cfg.LinkText.Color = BrightBlue.ValuePtr()
+	cfg.Link.Color = Black.StrPtr()
+	cfg.LinkText.Color = BrightBlue.StrPtr()
 
 	// Heading colors
-	cfg.Heading.StylePrimitive.Color = Magenta.ValuePtr()
-	cfg.H1.StylePrimitive.Color = BrightWhite.ValuePtr()
-	cfg.H1.StylePrimitive.BackgroundColor = Blue.ValuePtr()
+	cfg.Heading.StylePrimitive.Color = Magenta.StrPtr()
+	cfg.H1.StylePrimitive.Color = BrightWhite.StrPtr()
+	cfg.H1.StylePrimitive.BackgroundColor = Blue.StrPtr()
 
 	// Code colors
-	cfg.Code.BackgroundColor = BrightWhite.ValuePtr()
-	cfg.Code.Color = Red.ValuePtr()
+	cfg.Code.BackgroundColor = BrightWhite.StrPtr()
+	cfg.Code.Color = Red.StrPtr()
 
 	// Image colors
-	cfg.Image.Color = Magenta.ValuePtr()
+	cfg.Image.Color = Magenta.StrPtr()
 
 	// Horizontal rule colors
-	cfg.HorizontalRule.Color = White.ValuePtr()
+	cfg.HorizontalRule.Color = White.StrPtr()
 
 	return cfg
 }
