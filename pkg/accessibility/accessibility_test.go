@@ -71,7 +71,7 @@ func TestIsEnabled(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			t.Setenv("ACCESSIBILE", tt.envVarValue)
+			t.Setenv("ACCESSIBLE", tt.envVarValue)
 			testutils.StubConfig(t, tt.cfgStr)
 			assert.Equal(t, tt.wantOut, IsEnabled())
 		})
