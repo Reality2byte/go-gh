@@ -3,8 +3,8 @@ package markdown
 import (
 	"strconv"
 
-	"github.com/charmbracelet/glamour"
 	"github.com/charmbracelet/glamour/ansi"
+	"github.com/charmbracelet/glamour/styles"
 )
 
 type ANSIColorCode int
@@ -48,7 +48,7 @@ func AccessibleStyleConfig(theme string) ansi.StyleConfig {
 }
 
 func accessibleDarkStyleConfig() ansi.StyleConfig {
-	cfg := glamour.DarkStyleConfig
+	cfg := styles.DarkStyleConfig
 
 	// Text color
 	cfg.Document.StylePrimitive.Color = White.StrPtr()
@@ -76,7 +76,7 @@ func accessibleDarkStyleConfig() ansi.StyleConfig {
 }
 
 func accessibleLightStyleConfig() ansi.StyleConfig {
-	cfg := glamour.LightStyleConfig
+	cfg := styles.LightStyleConfig
 
 	// Text color
 	cfg.Document.StylePrimitive.Color = Black.StrPtr()
