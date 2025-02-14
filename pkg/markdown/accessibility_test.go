@@ -98,7 +98,7 @@ func Test_accessibleDarkStyleConfig(t *testing.T) {
 	assert.Equal(t, White.StrPtr(), cfg.HorizontalRule.Color)
 
 	// Test that we haven't changed the original style
-	assert.Equal(t, styles.LightStyleConfig.H2, cfg.H2)
+	assert.Equal(t, styles.DarkStyleConfig.H2, cfg.H2)
 }
 
 func Test_accessibleLightStyleConfig(t *testing.T) {
