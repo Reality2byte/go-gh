@@ -12,7 +12,7 @@ import (
 // this environment variable supercedes the configuration file's accessible setting.
 const ACCESSIBILITY_ENV = "ACCESSIBLE"
 
-// IsEnabled returns true if accessibility features are enabled via the ACCESSIBILITY
+// IsEnabled returns true if accessibility features are enabled via the ACCESSIBLE
 // environment variable or the configuration file.
 func IsEnabled() bool {
 	envVar := os.Getenv(ACCESSIBILITY_ENV)
