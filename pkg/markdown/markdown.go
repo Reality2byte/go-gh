@@ -39,7 +39,20 @@ func WithTheme(theme string) glamour.TermRendererOption {
 		switch theme {
 		case "light", "dark":
 			if accessible {
-				return glamour.WithStyles(AccessibleStyleConfig(theme))
+				// Applying multiple glamour.TermRendererOption here requires a wrapper that applies each
+				// within glamour.NewTermRenderer() in Render() below.
+				stylesOption := glamour.WithStyles(AccessibleStyleConfig(theme))
+				chromaOption := glamour.WithChromaFormatter("terminal16")
+
+				return func(tr *glamour.TermRenderer) error {
+					if err := stylesOption(tr); err != nil {
+						return err
+					}
+					if err := chromaOption(tr); err != nil {
+						return err
+					}
+					return nil
+				}
 			}
 			style = theme
 		default:

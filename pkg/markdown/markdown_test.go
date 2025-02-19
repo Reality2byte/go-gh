@@ -7,6 +7,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/MakeNowJust/heredoc"
 	"github.com/cli/go-gh/v2/pkg/accessibility"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -73,6 +74,48 @@ func Test_Render(t *testing.T) {
 			theme:            "dark",
 			accessibleEnvVar: "true",
 			wantOut:          fmt.Sprintf("%s1mh2", brightMagenta_4bitColorSeq),
+		},
+		{
+			name: "when the light theme is selected, the codeblock renders using 8-bit colors",
+			text: heredoc.Docf(`
+				%[1]s%[1]s%[1]sgo
+				fmt.Println("Hello, world!")
+				%[1]s%[1]s%[1]s
+			`, "`"),
+			theme:   "light",
+			wantOut: "\x1b[0m\x1b[38;5;235mfmt\x1b[0m\x1b[38;5;210m.\x1b[0m\x1b[38;5;35mPrintln\x1b[0m\x1b[38;5;210m(\x1b[0m\x1b[38;5;95m\"Hello, world!\"\x1b[0m\x1b[38;5;210m)\x1b[0m",
+		},
+		{
+			name: "when the dark theme is selected, the codeblock renders using 8-bit colors",
+			text: heredoc.Docf(`
+				%[1]s%[1]s%[1]sgo
+				fmt.Println("Hello, world!")
+				%[1]s%[1]s%[1]s
+			`, "`"),
+			theme:   "dark",
+			wantOut: "\x1b[0m\x1b[38;5;235mfmt\x1b[0m\x1b[38;5;210m.\x1b[0m\x1b[38;5;35mPrintln\x1b[0m\x1b[38;5;210m(\x1b[0m\x1b[38;5;95m\"Hello, world!\"\x1b[0m\x1b[38;5;210m)\x1b[0m",
+		},
+		{
+			name: "when the accessible env var is set and the light theme is selected, the codeblock renders using 4-bit colors",
+			text: heredoc.Docf(`
+				%[1]s%[1]s%[1]sgo
+				fmt.Println("Hello, world!")
+				%[1]s%[1]s%[1]s
+			`, "`"),
+			theme:            "light",
+			accessibleEnvVar: "true",
+			wantOut:          "\x1b[0m\x1b[30mfmt\x1b[0m\x1b[33m.\x1b[0m\x1b[36mPrintln\x1b[0m\x1b[33m(\x1b[0m\x1b[90m\"Hello, world!\"\x1b[0m\x1b[33m)\x1b[0m",
+		},
+		{
+			name: "when the accessible env var is set and the dark theme is selected, the codeblock renders using 4-bit colors",
+			text: heredoc.Docf(`
+				%[1]s%[1]s%[1]sgo
+				fmt.Println("Hello, world!")
+				%[1]s%[1]s%[1]s
+			`, "`"),
+			theme:            "dark",
+			accessibleEnvVar: "true",
+			wantOut:          "\x1b[0m\x1b[30mfmt\x1b[0m\x1b[33m.\x1b[0m\x1b[36mPrintln\x1b[0m\x1b[33m(\x1b[0m\x1b[90m\"Hello, world!\"\x1b[0m\x1b[33m)\x1b[0m",
 		},
 	}
 	for _, tt := range tests {
