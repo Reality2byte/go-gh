@@ -5,9 +5,9 @@ go 1.21
 require (
 	github.com/AlecAivazis/survey/v2 v2.3.7
 	github.com/MakeNowJust/heredoc v1.0.0
-	github.com/charmbracelet/glamour v0.8.0
 	github.com/charmbracelet/lipgloss v1.0.0
 	github.com/cli/browser v1.3.0
+	github.com/cli/glamour v0.0.0-20250220192152-8544502ccff9
 	github.com/cli/safeexec v1.0.0
 	github.com/cli/shurcooL-graphql v0.0.4
 	github.com/google/shlex v0.0.0-20191202100458-e7afc7fbc510
@@ -49,5 +49,3 @@ require (
 	golang.org/x/net v0.33.0 // indirect
 	gopkg.in/check.v1 v1.0.0-20180628173108-788fd7840127 // indirect
 )
-
-replace github.com/charmbracelet/glamour => github.com/cli/glamour v0.0.0-20250219132354-dba8cf7ee336

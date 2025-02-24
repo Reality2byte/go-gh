@@ -24,8 +24,8 @@ github.com/charmbracelet/x/exp/golden v0.0.0-20240806155701-69247e0abc2a h1:G99k
 github.com/charmbracelet/x/exp/golden v0.0.0-20240806155701-69247e0abc2a/go.mod h1:wDlXFlCrmJ8J+swcL/MnGUuYnqgQdW9rhSD61oNMb6U=
 github.com/cli/browser v1.3.0 h1:LejqCrpWr+1pRqmEPDGnTZOjsMe7sehifLynZJuqJpo=
 github.com/cli/browser v1.3.0/go.mod h1:HH8s+fOAxjhQoBUAsKuPCbqUuxZDhQ2/aD+SzsEfBTk=
-github.com/cli/glamour v0.0.0-20250219132354-dba8cf7ee336 h1:8C3iXVZ6ZP8MblfrT1KKPMgW0q1ZO9nXSPvpKy79VEk=
-github.com/cli/glamour v0.0.0-20250219132354-dba8cf7ee336/go.mod h1:OUgq8/2KmRHaylj8o+SGSoOiY+D0bNJfwaqN15oK4A0=
+github.com/cli/glamour v0.0.0-20250220192152-8544502ccff9 h1:fPJNUzG+Au+pIfYx2c5QNngZ3KLj7xAzjutL6efy1x8=
+github.com/cli/glamour v0.0.0-20250220192152-8544502ccff9/go.mod h1:bB4uNJ5F0+nzpGqwlhKEy7tD0PPL0SxNWEwZzG77vMg=
 github.com/cli/safeexec v1.0.0 h1:0VngyaIyqACHdcMNWfo6+KdUYnqEr2Sg+bSP1pdF+dI=
 github.com/cli/safeexec v1.0.0/go.mod h1:Z/D4tTN8Vs5gXYHDCbaM1S/anmEDnJb1iW0+EJ5zx3Q=
 github.com/cli/shurcooL-graphql v0.0.4 h1:6MogPnQJLjKkaXPyGqPRXOI2qCsQdqNfUY1QSJu2GuY=
