@@ -5,14 +5,16 @@ go 1.21
 require (
 	github.com/AlecAivazis/survey/v2 v2.3.7
 	github.com/MakeNowJust/heredoc v1.0.0
+	github.com/alecthomas/chroma/v2 v2.14.0
 	github.com/charmbracelet/lipgloss v1.0.0
 	github.com/cli/browser v1.3.0
-	github.com/cli/glamour v0.0.0-20250220192152-8544502ccff9
+	github.com/cli/glamour v0.0.0-20250225134531-b1d96ed4a7e1
 	github.com/cli/safeexec v1.0.0
 	github.com/cli/shurcooL-graphql v0.0.4
 	github.com/google/shlex v0.0.0-20191202100458-e7afc7fbc510
 	github.com/henvic/httpretty v0.0.6
 	github.com/itchyny/gojq v0.12.15
+	github.com/leaanthony/go-ansi-parser v1.6.1
 	github.com/mgutz/ansi v0.0.0-20200706080929-d51e80ef957d
 	github.com/muesli/reflow v0.3.0
 	github.com/muesli/termenv v0.15.3-0.20240618155329-98d742f6907a
@@ -26,7 +28,6 @@ require (
 )
 
 require (
-	github.com/alecthomas/chroma/v2 v2.14.0 // indirect
 	github.com/aymanbagabas/go-osc52/v2 v2.0.1 // indirect
 	github.com/aymerick/douceur v0.2.0 // indirect
 	github.com/charmbracelet/x/ansi v0.8.0 // indirect
