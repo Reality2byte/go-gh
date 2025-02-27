@@ -24,10 +24,11 @@ const (
 	brightMagenta_4bitColorSeq  = "\x1b[95;"
 )
 
-func Test_Render_Codeblocks(t *testing.T) {
-	t.Setenv("GLAMOUR_STYLE", "")
-
-	text := heredoc.Docf(`
+// Test_RenderAccessible tests rendered markdown for accessibility concerns such as color mode / depth and other display attributes.
+// It works by parsing the rendered markdown for ANSI escape sequences and checking their display attributes.
+// Test scenarios allow multiple color mode / depths because `ansi.Parse()` considers `\x1b[0m` sequence as part of `ansi.Default`.
+func Test_RenderAccessible(t *testing.T) {
+	goCodeBlock := heredoc.Docf(`
 		%[1]s%[1]s%[1]sgo
 		package main
 
@@ -41,33 +42,92 @@ func Test_Render_Codeblocks(t *testing.T) {
 		%[1]s%[1]s%[1]s
 	`, "`")
 
+	shellCodeBlock := heredoc.Docf(`
+		%[1]s%[1]s%[1]sshell
+		# list all repositories for a user
+		$ gh api graphql --paginate -f query='
+			query($endCursor: String) {
+				viewer {
+					repositories(first: 100, after: $endCursor) {
+						nodes { nameWithOwner }
+						pageInfo {
+							hasNextPage
+							endCursor
+						}
+					}
+				}
+			}
+		'
+		%[1]s%[1]s%[1]s
+	`)
+
 	tests := []struct {
-		name       string
-		text       string
-		theme      string
-		accessible bool
+		name              string
+		text              string
+		theme             string
+		accessible        bool
+		wantColourModes   []ansi.ColourMode
+		allowDimFaintText bool
 	}{
 		{
-			name:  "when the light theme is selected, the codeblock renders using 8-bit colors",
-			text:  text,
-			theme: "light",
+			name:              "when the light theme is selected, the Go codeblock renders using 8-bit colors",
+			text:              goCodeBlock,
+			theme:             "light",
+			wantColourModes:   []ansi.ColourMode{ansi.Default, ansi.TwoFiveSix},
+			allowDimFaintText: true,
 		},
 		{
-			name:  "when the dark theme is selected, the codeblock renders using 8-bit colors",
-			text:  text,
-			theme: "dark",
+			name:              "when the dark theme is selected, the Go codeblock renders using 8-bit colors",
+			text:              goCodeBlock,
+			theme:             "dark",
+			wantColourModes:   []ansi.ColourMode{ansi.Default, ansi.TwoFiveSix},
+			allowDimFaintText: true,
 		},
 		{
-			name:       "when the accessible env var is set and the light theme is selected, the codeblock renders using 4-bit colors",
-			text:       text,
-			theme:      "light",
-			accessible: true,
+			name:              "when the accessible env var is set and the light theme is selected, the Go codeblock renders using 4-bit colors without dim/faint text",
+			text:              goCodeBlock,
+			theme:             "light",
+			accessible:        true,
+			wantColourModes:   []ansi.ColourMode{ansi.Default},
+			allowDimFaintText: false,
 		},
 		{
-			name:       "when the accessible env var is set and the dark theme is selected, the codeblock renders using 4-bit colors",
-			text:       text,
-			theme:      "dark",
-			accessible: true,
+			name:              "when the accessible env var is set and the dark theme is selected, the Go codeblock renders using 4-bit colors without dim/faint text",
+			text:              goCodeBlock,
+			theme:             "dark",
+			accessible:        true,
+			wantColourModes:   []ansi.ColourMode{ansi.Default},
+			allowDimFaintText: false,
+		},
+		{
+			name:              "when the light theme is selected, the Shell codeblock renders using 8-bit colors",
+			text:              shellCodeBlock,
+			theme:             "light",
+			wantColourModes:   []ansi.ColourMode{ansi.Default, ansi.TwoFiveSix},
+			allowDimFaintText: true,
+		},
+		{
+			name:              "when the dark theme is selected, the Shell codeblock renders using 8-bit colors",
+			text:              shellCodeBlock,
+			theme:             "dark",
+			wantColourModes:   []ansi.ColourMode{ansi.Default, ansi.TwoFiveSix},
+			allowDimFaintText: true,
+		},
+		{
+			name:              "when the accessible env var is set and the light theme is selected, the Shell codeblock renders using 4-bit colors without dim/faint text",
+			text:              shellCodeBlock,
+			theme:             "light",
+			accessible:        true,
+			wantColourModes:   []ansi.ColourMode{ansi.Default},
+			allowDimFaintText: false,
+		},
+		{
+			name:              "when the accessible env var is set and the dark theme is selected, the Shell codeblock renders using 4-bit colors without dim/faint text",
+			text:              shellCodeBlock,
+			theme:             "dark",
+			accessible:        true,
+			wantColourModes:   []ansi.ColourMode{ansi.Default},
+			allowDimFaintText: false,
 		},
 	}
 	for _, tt := range tests {
@@ -79,24 +139,28 @@ func Test_Render_Codeblocks(t *testing.T) {
 			out, err := Render(tt.text, WithTheme(tt.theme))
 			require.NoError(t, err)
 
+			// Parse and test ANSI escape sequences from rendered markdown for inaccessible display attributes
 			styledText, err := ansi.Parse(out)
 			require.NoError(t, err)
 
 			for _, st := range styledText {
-				if tt.accessible {
-					require.Equalf(t, st.ColourMode, ansi.Default, "Inaccessible color found in '%s' at %d", st, st.Offset)
-					require.Falsef(t, st.Faint(), "Inaccessible style found in '%s' at %d", st, st.Offset)
+				require.Containsf(t, tt.wantColourModes, st.ColourMode, "Unexpected color mode detected in '%s' at %d", st, st.Offset)
+
+				if st.Faint() {
+					require.Truef(t, tt.allowDimFaintText, "Unexpected dim/faint text detected in '%s' at %d", st, st.Offset)
 				}
 			}
 		})
 	}
 }
 
-// Test_Render verifies that the proper ANSI color codes are applied to the rendered
+// Test_RenderColor verifies that the proper ANSI color codes are applied to the rendered
 // markdown by examining the ANSI escape sequences in the output for the correct color
 // match. For more information on ANSI color codes, see
 // https://en.wikipedia.org/wiki/ANSI_escape_code#8-bit
-func Test_Render(t *testing.T) {
+func Test_RenderColor(t *testing.T) {
+	t.Setenv("GLAMOUR_STYLE", "")
+
 	codeBlock := heredoc.Docf(`
 		%[1]s%[1]s%[1]sgo
 		fmt.Println("Hello, world!")
@@ -179,13 +243,13 @@ func Test_Render(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			// Unregister cached chroma style causing codeblock tests to fail based on previous theme
-			delete(styles.Registry, "charm")
+			t.Cleanup(func() {
+				// Chroma caches charm style used to render codeblocks, it must be unregistered to avoid previously used style being reused.
+				delete(styles.Registry, "charm")
+			})
 			t.Setenv(accessibility.ACCESSIBILITY_ENV, tt.accessibleEnvVar)
 
-			if tt.styleEnvVar == "" {
-				t.Setenv("GLAMOUR_STYLE", "")
-			} else {
+			if tt.styleEnvVar != "" {
 				path := filepath.Join(t.TempDir(), fmt.Sprintf("%s.json", tt.styleEnvVar))
 				err := os.WriteFile(path, []byte(customGlamourStyle(t)), 0644)
 				if err != nil {
