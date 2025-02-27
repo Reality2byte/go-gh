@@ -5,7 +5,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/charmbracelet/glamour"
+	"github.com/cli/glamour"
 	"github.com/cli/go-gh/v2/pkg/accessibility"
 )
 
@@ -39,7 +39,10 @@ func WithTheme(theme string) glamour.TermRendererOption {
 		switch theme {
 		case "light", "dark":
 			if accessible {
-				return glamour.WithStyles(AccessibleStyleConfig(theme))
+				return glamour.WithOptions(
+					glamour.WithStyles(AccessibleStyleConfig(theme)),
+					glamour.WithChromaFormatter("terminal16"),
+				)
 			}
 			style = theme
 		default:
