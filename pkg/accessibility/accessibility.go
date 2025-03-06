@@ -6,16 +6,23 @@ import (
 	"github.com/cli/go-gh/v2/pkg/config"
 )
 
-// ACCESSIBILITY_ENV is the name of the environment variable that can be used to enable
-// accessibility features. If the value is empty, "0", or "false", the accessibility
-// features are disabled. Any other value enables the accessibility features. Note that
-// this environment variable supercedes the configuration file's accessible setting.
-const ACCESSIBILITY_ENV = "ACCESSIBLE"
+const (
+	// AccessibleColorsEnv is the name of the environment variable to enable accessibile color features.
+	AccessibleColorsEnv = "GH_ACCESSIBLE_COLORS"
 
-// IsEnabled returns true if accessibility features are enabled via the ACCESSIBLE
-// environment variable or the configuration file.
-func IsEnabled() bool {
-	envVar := os.Getenv(ACCESSIBILITY_ENV)
+	// AccessibleColorsSetting is the name of the `gh config` setting to enable accessibile color features.
+	AccessibleColorsSetting = "accessible_colors"
+)
+
+// IsAccessibleColorsEnabled returns true if accessibility colors are enabled via environment variable
+// or configuration settings.
+//
+// If the environment variable is empty, "0", or "false", the accessibility colors are disabled.
+// Any other value enables the accessibility features.
+//
+// Note that this environment variable supercedes the configuration file's accessible setting.
+func IsAccessibleColorsEnabled() bool {
+	envVar := os.Getenv(AccessibleColorsEnv)
 	if envVar != "" {
 		return isEnvVarEnabled(envVar)
 	}
@@ -23,7 +30,7 @@ func IsEnabled() bool {
 	// We are not handling errors because we don't want to fail if the config is not
 	// read. Instead, we assume an empty configuration is equivalent to "disabled".
 	cfg, _ := config.Read(nil)
-	accessibleConfigValue, _ := cfg.Get([]string{"accessible"})
+	accessibleConfigValue, _ := cfg.Get([]string{AccessibleColorsSetting})
 
 	return accessibleConfigValue == "enabled"
 }

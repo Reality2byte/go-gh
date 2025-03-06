@@ -3,11 +3,12 @@ package accessibility
 import (
 	"testing"
 
+	"github.com/MakeNowJust/heredoc"
 	"github.com/cli/go-gh/v2/internal/testutils"
 	"github.com/stretchr/testify/assert"
 )
 
-func TestIsEnabled(t *testing.T) {
+func TestIsAccessibleColorsEnabled(t *testing.T) {
 	tests := []struct {
 		name        string
 		envVarValue string
@@ -21,19 +22,19 @@ func TestIsEnabled(t *testing.T) {
 			wantOut:     false,
 		},
 		{
-			name:        "When the accessibility configuration is unset but the ACCESSIBLE env var is set to something truthy (not '0' or 'false'), it should return true",
+			name:        "When the accessibility configuration is unset but the env var is set to something truthy (not '0' or 'false'), it should return true",
 			envVarValue: "1",
 			cfgStr:      "",
 			wantOut:     true,
 		},
 		{
-			name:        "When the accessibility configuration is unset and the ACCESSIBLE env var returns '0', it should return false",
+			name:        "When the accessibility configuration is unset and the env var returns '0', it should return false",
 			envVarValue: "0",
 			cfgStr:      "",
 			wantOut:     false,
 		},
 		{
-			name:        "When the accessibility configuration is unset and the ACCESSIBLE env var returns 'false', it should return false",
+			name:        "When the accessibility configuration is unset and the env var returns 'false', it should return false",
 			envVarValue: "false",
 			cfgStr:      "",
 			wantOut:     false,
@@ -71,21 +72,21 @@ func TestIsEnabled(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			t.Setenv("ACCESSIBLE", tt.envVarValue)
+			t.Setenv("GH_ACCESSIBLE_COLORS", tt.envVarValue)
 			testutils.StubConfig(t, tt.cfgStr)
-			assert.Equal(t, tt.wantOut, IsEnabled())
+			assert.Equal(t, tt.wantOut, IsAccessibleColorsEnabled())
 		})
 	}
 }
 
 func accessibilityEnabledConfig() string {
-	return `
-accessible: enabled
-`
+	return heredoc.Docf(`
+		%s: enabled
+	`, AccessibleColorsSetting)
 }
 
 func accessibilityDisabledConfig() string {
-	return `
-accessible: disabled
-`
+	return heredoc.Docf(`
+		%s: disabled
+	`, AccessibleColorsSetting)
 }

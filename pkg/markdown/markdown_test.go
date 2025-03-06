@@ -133,7 +133,7 @@ func Test_RenderAccessible(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if tt.accessible {
-				t.Setenv(accessibility.ACCESSIBILITY_ENV, "true")
+				t.Setenv(accessibility.AccessibleColorsEnv, "true")
 			}
 
 			out, err := Render(tt.text, WithTheme(tt.theme))
@@ -247,7 +247,7 @@ func Test_RenderColor(t *testing.T) {
 				// Chroma caches charm style used to render codeblocks, it must be unregistered to avoid previously used style being reused.
 				delete(styles.Registry, "charm")
 			})
-			t.Setenv(accessibility.ACCESSIBILITY_ENV, tt.accessibleEnvVar)
+			t.Setenv(accessibility.AccessibleColorsEnv, tt.accessibleEnvVar)
 
 			if tt.styleEnvVar != "" {
 				path := filepath.Join(t.TempDir(), fmt.Sprintf("%s.json", tt.styleEnvVar))
