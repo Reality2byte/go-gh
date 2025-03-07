@@ -1,4 +1,4 @@
-package accessibility
+package color
 
 import (
 	"os"
@@ -14,13 +14,13 @@ const (
 	AccessibleColorsSetting = "accessible_colors"
 )
 
-// IsAccessibleColorsEnabled returns true if accessibility colors are enabled via environment variable
-// or configuration settings.
+// IsAccessibleColorsEnabled returns true if accessible colors are enabled via environment variable
+// or configuration setting with the environment variable having higher precedence.
 //
-// If the environment variable is empty, "0", or "false", the accessibility colors are disabled.
-// Any other value enables the accessibility features.
+// If the environment variable is empty, "0", or "false", the accessible colors are disabled.
+// Any other value enables the accessibility feature.
 //
-// Note that this environment variable supercedes the configuration file's accessible setting.
+// Note this is an experimental feature that is subject to change.
 func IsAccessibleColorsEnabled() bool {
 	envVar := os.Getenv(AccessibleColorsEnv)
 	if envVar != "" {

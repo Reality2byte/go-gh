@@ -1,4 +1,4 @@
-package accessibility
+package color
 
 import (
 	"testing"
