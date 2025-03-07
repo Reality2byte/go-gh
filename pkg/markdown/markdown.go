@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/cli/glamour"
-	"github.com/cli/go-gh/v2/pkg/accessibility"
+	"github.com/cli/go-gh/v2/pkg/x/color"
 )
 
 // WithoutIndentation is a rendering option that removes indentation from the markdown rendering.
@@ -34,7 +34,7 @@ func WithWrap(w int) glamour.TermRendererOption {
 // If the environment variable GLAMOUR_STYLE is set, it will take precedence over the provided theme.
 func WithTheme(theme string) glamour.TermRendererOption {
 	style := os.Getenv("GLAMOUR_STYLE")
-	accessible := accessibility.IsAccessibleColorsEnabled()
+	accessible := color.IsAccessibleColorsEnabled()
 	if style == "" || style == "auto" {
 		switch theme {
 		case "light", "dark":
