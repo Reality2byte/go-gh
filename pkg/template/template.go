@@ -85,8 +85,8 @@ func (t *Template) Parse(tmpl string) error {
 		templateFuncs["autocolor"] = autoColorFunc
 	}
 
-	for name, fn := range sprigFuncMap() {
-		templateFuncs[name] = fn
+	for name, f := range sprigFuncMap() {
+		templateFuncs[name] = f
 	}
 
 	for name, f := range t.funcs {
