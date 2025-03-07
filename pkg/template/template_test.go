@@ -377,6 +377,38 @@ func TestExecute(t *testing.T) {
 			},
 			wantW: "\x1b]8;;https://github.com\x1b\\GitHub\x1b]8;;\x1b\\",
 		},
+		{
+			name: "contains",
+			args: args{
+				json:     strings.NewReader(`{"product":"GitHub CLI"}`),
+				template: `{{ contains "CLI" .product }}`,
+			},
+			wantW: "true",
+		},
+		{
+			name: "hasSuffix",
+			args: args{
+				json:     strings.NewReader(`{"product":"GitHub CLI"}`),
+				template: `{{ hasSuffix "CLI" .product }}`,
+			},
+			wantW: "true",
+		},
+		{
+			name: "hasPrefix",
+			args: args{
+				json:     strings.NewReader(`{"product":"GitHub CLI"}`),
+				template: `{{ hasPrefix "GitHub" .product }}`,
+			},
+			wantW: "true",
+		},
+		{
+			name: "regexMatch",
+			args: args{
+				json:     strings.NewReader(`{"product":"GitHub CLI"}`),
+				template: `{{ regexMatch "^Git.* CLI$" .product }}`,
+			},
+			wantW: "true",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
