@@ -17,12 +17,11 @@ const (
 // IsAccessibleColorsEnabled returns true if accessible colors are enabled via environment variable
 // or configuration setting with the environment variable having higher precedence.
 //
-// If the environment variable is empty, "0", or "false", the accessible colors are disabled.
-// Any other value enables the accessibility feature.
-//
-// Note this is an experimental feature that is subject to change.
+// If the environment variable is set, then any value other than the following will enable accessible colors:
+// empty, "0", "false", or "no".
 func IsAccessibleColorsEnabled() bool {
-	if envVar, ok := os.LookupEnv(AccessibleColorsEnv); ok {
+	// Environment variable only has the highest precedence if actually set.
+	if envVar, set := os.LookupEnv(AccessibleColorsEnv); set {
 		switch envVar {
 		case "", "0", "false", "no":
 			return false

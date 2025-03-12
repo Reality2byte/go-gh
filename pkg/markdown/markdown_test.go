@@ -252,9 +252,7 @@ func Test_RenderColor(t *testing.T) {
 			if tt.styleEnvVar != "" {
 				path := filepath.Join(t.TempDir(), fmt.Sprintf("%s.json", tt.styleEnvVar))
 				err := os.WriteFile(path, []byte(customGlamourStyle(t)), 0644)
-				if err != nil {
-					t.Fatal(err)
-				}
+				require.NoError(t, err)
 				t.Setenv("GLAMOUR_STYLE", path)
 			}
 
