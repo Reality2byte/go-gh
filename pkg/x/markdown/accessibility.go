@@ -31,7 +31,7 @@ const (
 	brightWhite
 )
 
-func (a glamourStyleColor) Code() *string {
+func (a glamourStyleColor) code() *string {
 	s := strconv.Itoa(int(a))
 	return &s
 }
@@ -51,25 +51,25 @@ func accessibleDarkStyleConfig() ansi.StyleConfig {
 	cfg := styles.DarkStyleConfig
 
 	// Text color
-	cfg.Document.StylePrimitive.Color = white.Code()
+	cfg.Document.StylePrimitive.Color = white.code()
 
 	// Link colors
-	cfg.Link.Color = brightCyan.Code()
+	cfg.Link.Color = brightCyan.code()
 
 	// Heading colors
-	cfg.Heading.StylePrimitive.Color = brightMagenta.Code()
-	cfg.H1.StylePrimitive.Color = brightWhite.Code()
-	cfg.H1.StylePrimitive.BackgroundColor = brightBlue.Code()
+	cfg.Heading.StylePrimitive.Color = brightMagenta.code()
+	cfg.H1.StylePrimitive.Color = brightWhite.code()
+	cfg.H1.StylePrimitive.BackgroundColor = brightBlue.code()
 
 	// Code colors
-	cfg.Code.BackgroundColor = brightWhite.Code()
-	cfg.Code.Color = red.Code()
+	cfg.Code.BackgroundColor = brightWhite.code()
+	cfg.Code.Color = red.code()
 
 	// Image colors
-	cfg.Image.Color = brightMagenta.Code()
+	cfg.Image.Color = brightMagenta.code()
 
 	// Horizontal rule colors
-	cfg.HorizontalRule.Color = white.Code()
+	cfg.HorizontalRule.Color = white.code()
 
 	return cfg
 }
@@ -78,25 +78,25 @@ func accessibleLightStyleConfig() ansi.StyleConfig {
 	cfg := styles.LightStyleConfig
 
 	// Text color
-	cfg.Document.StylePrimitive.Color = black.Code()
+	cfg.Document.StylePrimitive.Color = black.code()
 
 	// Link colors
-	cfg.Link.Color = brightBlue.Code()
+	cfg.Link.Color = brightBlue.code()
 
 	// Heading colors
-	cfg.Heading.StylePrimitive.Color = magenta.Code()
-	cfg.H1.StylePrimitive.Color = brightWhite.Code()
-	cfg.H1.StylePrimitive.BackgroundColor = blue.Code()
+	cfg.Heading.StylePrimitive.Color = magenta.code()
+	cfg.H1.StylePrimitive.Color = brightWhite.code()
+	cfg.H1.StylePrimitive.BackgroundColor = blue.code()
 
 	// Code colors
-	cfg.Code.BackgroundColor = brightWhite.Code()
-	cfg.Code.Color = red.Code()
+	cfg.Code.BackgroundColor = brightWhite.code()
+	cfg.Code.Color = red.code()
 
 	// Image colors
-	cfg.Image.Color = magenta.Code()
+	cfg.Image.Color = magenta.code()
 
 	// Horizontal rule colors
-	cfg.HorizontalRule.Color = white.Code()
+	cfg.HorizontalRule.Color = white.code()
 
 	return cfg
 }

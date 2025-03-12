@@ -98,7 +98,7 @@ func TestGlamourStyleColors(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			assert.Equal(t, tt.want, *tt.c.Code())
+			assert.Equal(t, tt.want, *tt.c.code())
 		})
 	}
 }
@@ -134,15 +134,15 @@ func TestAccessibleStyleConfig(t *testing.T) {
 
 func Test_accessibleDarkStyleConfig(t *testing.T) {
 	cfg := accessibleDarkStyleConfig()
-	assert.Equal(t, white.Code(), cfg.Document.StylePrimitive.Color)
-	assert.Equal(t, brightCyan.Code(), cfg.Link.Color)
-	assert.Equal(t, brightMagenta.Code(), cfg.Heading.StylePrimitive.Color)
-	assert.Equal(t, brightWhite.Code(), cfg.H1.StylePrimitive.Color)
-	assert.Equal(t, brightBlue.Code(), cfg.H1.StylePrimitive.BackgroundColor)
-	assert.Equal(t, brightWhite.Code(), cfg.Code.BackgroundColor)
-	assert.Equal(t, red.Code(), cfg.Code.Color)
-	assert.Equal(t, brightMagenta.Code(), cfg.Image.Color)
-	assert.Equal(t, white.Code(), cfg.HorizontalRule.Color)
+	assert.Equal(t, white.code(), cfg.Document.StylePrimitive.Color)
+	assert.Equal(t, brightCyan.code(), cfg.Link.Color)
+	assert.Equal(t, brightMagenta.code(), cfg.Heading.StylePrimitive.Color)
+	assert.Equal(t, brightWhite.code(), cfg.H1.StylePrimitive.Color)
+	assert.Equal(t, brightBlue.code(), cfg.H1.StylePrimitive.BackgroundColor)
+	assert.Equal(t, brightWhite.code(), cfg.Code.BackgroundColor)
+	assert.Equal(t, red.code(), cfg.Code.Color)
+	assert.Equal(t, brightMagenta.code(), cfg.Image.Color)
+	assert.Equal(t, white.code(), cfg.HorizontalRule.Color)
 
 	// Test that we haven't changed the original style
 	assert.Equal(t, styles.DarkStyleConfig.H2, cfg.H2)
@@ -150,15 +150,15 @@ func Test_accessibleDarkStyleConfig(t *testing.T) {
 
 func Test_accessibleLightStyleConfig(t *testing.T) {
 	cfg := accessibleLightStyleConfig()
-	assert.Equal(t, black.Code(), cfg.Document.StylePrimitive.Color)
-	assert.Equal(t, brightBlue.Code(), cfg.Link.Color)
-	assert.Equal(t, magenta.Code(), cfg.Heading.StylePrimitive.Color)
-	assert.Equal(t, brightWhite.Code(), cfg.H1.StylePrimitive.Color)
-	assert.Equal(t, blue.Code(), cfg.H1.StylePrimitive.BackgroundColor)
-	assert.Equal(t, brightWhite.Code(), cfg.Code.BackgroundColor)
-	assert.Equal(t, red.Code(), cfg.Code.Color)
-	assert.Equal(t, magenta.Code(), cfg.Image.Color)
-	assert.Equal(t, white.Code(), cfg.HorizontalRule.Color)
+	assert.Equal(t, black.code(), cfg.Document.StylePrimitive.Color)
+	assert.Equal(t, brightBlue.code(), cfg.Link.Color)
+	assert.Equal(t, magenta.code(), cfg.Heading.StylePrimitive.Color)
+	assert.Equal(t, brightWhite.code(), cfg.H1.StylePrimitive.Color)
+	assert.Equal(t, blue.code(), cfg.H1.StylePrimitive.BackgroundColor)
+	assert.Equal(t, brightWhite.code(), cfg.Code.BackgroundColor)
+	assert.Equal(t, red.code(), cfg.Code.Color)
+	assert.Equal(t, magenta.code(), cfg.Image.Color)
+	assert.Equal(t, white.code(), cfg.HorizontalRule.Color)
 
 	// Test that we haven't changed the original style
 	assert.Equal(t, styles.LightStyleConfig.H2, cfg.H2)
