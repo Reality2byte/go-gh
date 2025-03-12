@@ -247,7 +247,7 @@ func Test_RenderColor(t *testing.T) {
 				// Chroma caches charm style used to render codeblocks, it must be unregistered to avoid previously used style being reused.
 				delete(styles.Registry, "charm")
 			})
-			t.Setenv(color.AccessibleColorsEnv, tt.accessibleEnvVar)
+			t.Setenv("GH_ACCESSIBLE_COLORS", tt.accessibleEnvVar)
 
 			if tt.styleEnvVar != "" {
 				path := filepath.Join(t.TempDir(), fmt.Sprintf("%s.json", tt.styleEnvVar))

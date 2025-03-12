@@ -34,11 +34,10 @@ func WithWrap(w int) glamour.TermRendererOption {
 // If the environment variable GLAMOUR_STYLE is set, it will take precedence over the provided theme.
 func WithTheme(theme string) glamour.TermRendererOption {
 	style := os.Getenv("GLAMOUR_STYLE")
-	accessible := color.IsAccessibleColorsEnabled()
 	if style == "" || style == "auto" {
 		switch theme {
 		case "light", "dark":
-			if accessible {
+			if color.IsAccessibleColorsEnabled() {
 				return glamour.WithOptions(
 					glamour.WithStyles(AccessibleStyleConfig(theme)),
 					glamour.WithChromaFormatter("terminal16"),

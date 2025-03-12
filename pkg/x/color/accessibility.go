@@ -22,9 +22,13 @@ const (
 //
 // Note this is an experimental feature that is subject to change.
 func IsAccessibleColorsEnabled() bool {
-	envVar := os.Getenv(AccessibleColorsEnv)
-	if envVar != "" {
-		return isEnvVarEnabled(envVar)
+	if envVar, ok := os.LookupEnv(AccessibleColorsEnv); ok {
+		switch envVar {
+		case "", "0", "false", "no":
+			return false
+		default:
+			return true
+		}
 	}
 
 	// We are not handling errors because we don't want to fail if the config is not
@@ -33,8 +37,4 @@ func IsAccessibleColorsEnabled() bool {
 	accessibleConfigValue, _ := cfg.Get([]string{AccessibleColorsSetting})
 
 	return accessibleConfigValue == "enabled"
-}
-
-func isEnvVarEnabled(envVar string) bool {
-	return envVar != "" && envVar != "0" && envVar != "false"
 }
