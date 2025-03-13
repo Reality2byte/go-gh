@@ -115,6 +115,7 @@ func accessibleDarkStyleConfig() ansi.StyleConfig {
 	cfg.HorizontalRule.Color = white.code()
 
 	// Code block colors
+	// Unsetting StyleBlock color until we understand what it does versus Chroma style
 	cfg.CodeBlock.StyleBlock.StylePrimitive.Color = nil
 
 	return cfg
@@ -147,6 +148,7 @@ func accessibleLightStyleConfig() ansi.StyleConfig {
 	cfg.HorizontalRule.Color = white.code()
 
 	// Code block colors
+	// Unsetting StyleBlock color until we understand what it does versus Chroma style
 	cfg.CodeBlock.StyleBlock.StylePrimitive.Color = nil
 
 	return cfg
