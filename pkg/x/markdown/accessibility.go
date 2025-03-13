@@ -1,6 +1,7 @@
 package markdown
 
 import (
+	"fmt"
 	"strconv"
 
 	"github.com/charmbracelet/glamour/ansi"
@@ -31,9 +32,48 @@ const (
 	brightWhite
 )
 
-func (a glamourStyleColor) code() *string {
-	s := strconv.Itoa(int(a))
+func (gsc glamourStyleColor) code() *string {
+	s := strconv.Itoa(int(gsc))
 	return &s
+}
+
+func parseGlamourStyleColor(code string) (glamourStyleColor, error) {
+	switch code {
+	case "0":
+		return black, nil
+	case "1":
+		return red, nil
+	case "2":
+		return green, nil
+	case "3":
+		return yellow, nil
+	case "4":
+		return blue, nil
+	case "5":
+		return magenta, nil
+	case "6":
+		return cyan, nil
+	case "7":
+		return white, nil
+	case "8":
+		return brightBlack, nil
+	case "9":
+		return brightRed, nil
+	case "10":
+		return brightGreen, nil
+	case "11":
+		return brightYellow, nil
+	case "12":
+		return brightBlue, nil
+	case "13":
+		return brightMagenta, nil
+	case "14":
+		return brightCyan, nil
+	case "15":
+		return brightWhite, nil
+	default:
+		return 0, fmt.Errorf("invalid color code: %s", code)
+	}
 }
 
 func AccessibleStyleConfig(theme string) ansi.StyleConfig {
@@ -55,11 +95,13 @@ func accessibleDarkStyleConfig() ansi.StyleConfig {
 
 	// Link colors
 	cfg.Link.Color = brightCyan.code()
+	cfg.LinkText.Color = brightCyan.code()
 
 	// Heading colors
 	cfg.Heading.StylePrimitive.Color = brightMagenta.code()
 	cfg.H1.StylePrimitive.Color = brightWhite.code()
 	cfg.H1.StylePrimitive.BackgroundColor = brightBlue.code()
+	cfg.H6.StylePrimitive.Color = brightMagenta.code()
 
 	// Code colors
 	cfg.Code.BackgroundColor = brightWhite.code()
@@ -67,9 +109,13 @@ func accessibleDarkStyleConfig() ansi.StyleConfig {
 
 	// Image colors
 	cfg.Image.Color = brightMagenta.code()
+	cfg.ImageText.Color = brightMagenta.code()
 
 	// Horizontal rule colors
 	cfg.HorizontalRule.Color = white.code()
+
+	// Code block colors
+	cfg.CodeBlock.StyleBlock.StylePrimitive.Color = nil
 
 	return cfg
 }
@@ -82,6 +128,7 @@ func accessibleLightStyleConfig() ansi.StyleConfig {
 
 	// Link colors
 	cfg.Link.Color = brightBlue.code()
+	cfg.LinkText.Color = brightBlue.code()
 
 	// Heading colors
 	cfg.Heading.StylePrimitive.Color = magenta.code()
@@ -94,9 +141,13 @@ func accessibleLightStyleConfig() ansi.StyleConfig {
 
 	// Image colors
 	cfg.Image.Color = magenta.code()
+	cfg.ImageText.Color = magenta.code()
 
 	// Horizontal rule colors
 	cfg.HorizontalRule.Color = white.code()
+
+	// Code block colors
+	cfg.CodeBlock.StyleBlock.StylePrimitive.Color = nil
 
 	return cfg
 }

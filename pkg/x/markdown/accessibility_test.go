@@ -1,6 +1,7 @@
 package markdown
 
 import (
+	"reflect"
 	"testing"
 
 	"github.com/charmbracelet/glamour/ansi"
@@ -132,7 +133,7 @@ func TestAccessibleStyleConfig(t *testing.T) {
 	}
 }
 
-func Test_accessibleDarkStyleConfig(t *testing.T) {
+func TestAccessibleDarkStyleConfig(t *testing.T) {
 	cfg := accessibleDarkStyleConfig()
 	assert.Equal(t, white.code(), cfg.Document.StylePrimitive.Color)
 	assert.Equal(t, brightCyan.code(), cfg.Link.Color)
@@ -148,7 +149,12 @@ func Test_accessibleDarkStyleConfig(t *testing.T) {
 	assert.Equal(t, styles.DarkStyleConfig.H2, cfg.H2)
 }
 
-func Test_accessibleLightStyleConfig(t *testing.T) {
+func TestAccessibleDarkStyleConfigIs4Bit(t *testing.T) {
+	cfg := accessibleDarkStyleConfig()
+	validateColors(t, reflect.ValueOf(cfg), "StyleConfig")
+}
+
+func TestAccessibleLightStyleConfig(t *testing.T) {
 	cfg := accessibleLightStyleConfig()
 	assert.Equal(t, black.code(), cfg.Document.StylePrimitive.Color)
 	assert.Equal(t, brightBlue.code(), cfg.Link.Color)
@@ -162,4 +168,57 @@ func Test_accessibleLightStyleConfig(t *testing.T) {
 
 	// Test that we haven't changed the original style
 	assert.Equal(t, styles.LightStyleConfig.H2, cfg.H2)
+}
+
+func TestAccessibleLightStyleConfigIs4Bit(t *testing.T) {
+	cfg := accessibleLightStyleConfig()
+	validateColors(t, reflect.ValueOf(cfg), "StyleConfig")
+}
+
+// Walk every field in the StyleConfig struct, checking that the Color and
+// BackgroundColor fields are valid 4-bit colors.
+//
+// This test skips Chroma fields because their Color fields are RGB hex values
+// that are downsampled to 4-bit colors unlike Glamour, which are 8-bit colors.
+// For more information, https://github.com/alecthomas/chroma/blob/0bf0e9f9ae2a81d463afe769cce01ff821bee3ba/formatters/tty_indexed.go#L32-L44
+func validateColors(t *testing.T, v reflect.Value, path string) {
+	if v.Kind() == reflect.Ptr {
+		if v.IsNil() {
+			return
+		}
+		v = v.Elem()
+	}
+
+	switch v.Kind() {
+	case reflect.Struct:
+		for i := range v.NumField() {
+			field := v.Field(i)
+			fieldType := v.Type().Field(i)
+
+			// Construct path for better error reporting
+			fieldPath := path + "." + fieldType.Name
+
+			// Ensure we only check Glamour "Color" and "BackgroundColor"
+			if fieldType.Name == "Chroma" {
+				continue
+			} else if (fieldType.Name == "Color" || fieldType.Name == "BackgroundColor") &&
+				fieldType.Type.Kind() == reflect.Ptr && fieldType.Type.Elem().Kind() == reflect.String {
+
+				if field.IsNil() {
+					continue
+				}
+				color := field.Elem().String()
+				_, err := parseGlamourStyleColor(color)
+				assert.NoError(t, err, "Failed to parse color '%s' in %s", color, fieldPath)
+			} else {
+				// Recurse into nested structs
+				validateColors(t, field, fieldPath)
+			}
+		}
+	case reflect.Slice:
+		// Handle slices of structs
+		for i := range v.Len() {
+			validateColors(t, v.Index(i), path+"[]")
+		}
+	}
 }

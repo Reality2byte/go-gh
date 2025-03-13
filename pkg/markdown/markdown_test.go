@@ -28,6 +28,14 @@ const (
 // It works by parsing the rendered markdown for ANSI escape sequences and checking their display attributes.
 // Test scenarios allow multiple color mode / depths because `ansi.Parse()` considers `\x1b[0m` sequence as part of `ansi.Default`.
 func Test_RenderAccessible(t *testing.T) {
+	anchor := heredoc.Doc(`
+		[GitHub CLI repository](https://github.com/cli/cli)
+	`)
+
+	img := heredoc.Doc(`
+		[Animated Mona for loading screen](https://github.com/user-attachments/assets/a43e7ce6-8360-466c-b2d5-0c74a60c30a4)
+	`)
+
 	goCodeBlock := heredoc.Docf(`
 		%[1]s%[1]s%[1]sgo
 		package main
@@ -59,7 +67,7 @@ func Test_RenderAccessible(t *testing.T) {
 			}
 		'
 		%[1]s%[1]s%[1]s
-	`)
+	`, "`")
 
 	tests := []struct {
 		name              string
@@ -69,6 +77,7 @@ func Test_RenderAccessible(t *testing.T) {
 		wantColourModes   []ansi.ColourMode
 		allowDimFaintText bool
 	}{
+		// Go block
 		{
 			name:              "when the light theme is selected, the Go codeblock renders using 8-bit colors",
 			text:              goCodeBlock,
@@ -99,6 +108,7 @@ func Test_RenderAccessible(t *testing.T) {
 			wantColourModes:   []ansi.ColourMode{ansi.Default},
 			allowDimFaintText: false,
 		},
+		// shell block
 		{
 			name:              "when the light theme is selected, the Shell codeblock renders using 8-bit colors",
 			text:              shellCodeBlock,
@@ -124,6 +134,68 @@ func Test_RenderAccessible(t *testing.T) {
 		{
 			name:              "when the accessible env var is set and the dark theme is selected, the Shell codeblock renders using 4-bit colors without dim/faint text",
 			text:              shellCodeBlock,
+			theme:             "dark",
+			accessible:        true,
+			wantColourModes:   []ansi.ColourMode{ansi.Default},
+			allowDimFaintText: false,
+		},
+		// image text and link
+		{
+			name:              "when the light theme is selected, the image text and link rendered using 8-bit colors",
+			text:              img,
+			theme:             "light",
+			wantColourModes:   []ansi.ColourMode{ansi.Default, ansi.TwoFiveSix},
+			allowDimFaintText: true,
+		},
+		{
+			name:              "when the dark theme is selected, the image text and link rendered using 8-bit colors",
+			text:              img,
+			theme:             "dark",
+			wantColourModes:   []ansi.ColourMode{ansi.Default, ansi.TwoFiveSix},
+			allowDimFaintText: true,
+		},
+		{
+			name:              "when the accessible env var is set and the light theme is selected, the image text and link render using 4-bit colors without dim/faint text",
+			text:              img,
+			theme:             "light",
+			accessible:        true,
+			wantColourModes:   []ansi.ColourMode{ansi.Default},
+			allowDimFaintText: false,
+		},
+		{
+			name:              "when the accessible env var is set and the dark theme is selected, the image text and link render using 4-bit colors without dim/faint text",
+			text:              img,
+			theme:             "dark",
+			accessible:        true,
+			wantColourModes:   []ansi.ColourMode{ansi.Default},
+			allowDimFaintText: false,
+		},
+		// anchor text and link
+		{
+			name:              "when the light theme is selected, the anchor text and link rendered using 8-bit colors",
+			text:              anchor,
+			theme:             "light",
+			wantColourModes:   []ansi.ColourMode{ansi.Default, ansi.TwoFiveSix},
+			allowDimFaintText: true,
+		},
+		{
+			name:              "when the dark theme is selected, the anchor text and link rendered using 8-bit colors",
+			text:              anchor,
+			theme:             "dark",
+			wantColourModes:   []ansi.ColourMode{ansi.Default, ansi.TwoFiveSix},
+			allowDimFaintText: true,
+		},
+		{
+			name:              "when the accessible env var is set and the light theme is selected, the anchor text and link render using 4-bit colors without dim/faint text",
+			text:              anchor,
+			theme:             "light",
+			accessible:        true,
+			wantColourModes:   []ansi.ColourMode{ansi.Default},
+			allowDimFaintText: false,
+		},
+		{
+			name:              "when the accessible env var is set and the dark theme is selected, the anchor text and link render using 4-bit colors without dim/faint text",
+			text:              anchor,
 			theme:             "dark",
 			accessible:        true,
 			wantColourModes:   []ansi.ColourMode{ansi.Default},
