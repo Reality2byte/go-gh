@@ -42,6 +42,7 @@ func WithTheme(theme string) glamour.TermRendererOption {
 				return glamour.WithOptions(
 					glamour.WithStyles(xmarkdown.AccessibleStyleConfig(theme)),
 					glamour.WithChromaFormatter("terminal16"),
+					glamour.WithTableWrap(false),
 				)
 			}
 			style = theme
