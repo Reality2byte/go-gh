@@ -99,6 +99,8 @@ func TestGlamourStyleColors(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			assert.Equal(t, tt.want, *tt.c.code())
 		})
 	}
@@ -128,6 +130,8 @@ func TestAccessibleStyleConfig(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			assert.Equal(t, tt.want, AccessibleStyleConfig(tt.theme))
 		})
 	}
@@ -150,11 +154,15 @@ func TestAccessibleDarkStyleConfig(t *testing.T) {
 }
 
 func TestAccessibleDarkStyleConfigIs4Bit(t *testing.T) {
+	t.Parallel()
+
 	cfg := accessibleDarkStyleConfig()
 	validateColors(t, reflect.ValueOf(cfg), "StyleConfig")
 }
 
 func TestAccessibleLightStyleConfig(t *testing.T) {
+	t.Parallel()
+
 	cfg := accessibleLightStyleConfig()
 	assert.Equal(t, black.code(), cfg.Document.StylePrimitive.Color)
 	assert.Equal(t, brightBlue.code(), cfg.Link.Color)
@@ -171,6 +179,8 @@ func TestAccessibleLightStyleConfig(t *testing.T) {
 }
 
 func TestAccessibleLightStyleConfigIs4Bit(t *testing.T) {
+	t.Parallel()
+
 	cfg := accessibleLightStyleConfig()
 	validateColors(t, reflect.ValueOf(cfg), "StyleConfig")
 }
