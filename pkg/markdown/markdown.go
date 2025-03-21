@@ -42,7 +42,6 @@ func WithTheme(theme string) glamour.TermRendererOption {
 				return glamour.WithOptions(
 					glamour.WithStyles(xmarkdown.AccessibleStyleConfig(theme)),
 					glamour.WithChromaFormatter("terminal16"),
-					glamour.WithTableWrap(false),
 				)
 			}
 			style = theme
@@ -64,7 +63,7 @@ func Render(text string, opts ...glamour.TermRendererOption) (string, error) {
 	// Glamour rendering preserves carriage return characters in code blocks, but
 	// we need to ensure that no such characters are present in the output.
 	text = strings.ReplaceAll(text, "\r\n", "\n")
-	opts = append(opts, glamour.WithEmoji(), glamour.WithPreservedNewLines())
+	opts = append(opts, glamour.WithEmoji(), glamour.WithPreservedNewLines(), glamour.WithTableWrap(false))
 	tr, err := glamour.NewTermRenderer(opts...)
 	if err != nil {
 		return "", err
