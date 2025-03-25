@@ -8,13 +8,13 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/cli/go-gh/v2/pkg/config"
+	"github.com/cli/go-gh/v2/internal/testutils"
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/h2non/gock.v1"
 )
 
 func TestHTTPClient(t *testing.T) {
-	stubConfig(t, testConfig())
+	testutils.StubConfig(t, testConfig())
 	t.Cleanup(gock.Off)
 
 	gock.New("https://api.github.com").
@@ -175,17 +175,6 @@ func defaultHeaders() http.Header {
 	h.Set(timeZone, currentTimeZone())
 	h.Set(accept, a)
 	return h
-}
-
-func stubConfig(t *testing.T, cfgStr string) {
-	t.Helper()
-	old := config.Read
-	config.Read = func(_ *config.Config) (*config.Config, error) {
-		return config.ReadFromString(cfgStr), nil
-	}
-	t.Cleanup(func() {
-		config.Read = old
-	})
 }
 
 func printPendingMocks(mocks []gock.Mock) string {

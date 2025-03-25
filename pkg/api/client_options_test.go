@@ -4,11 +4,12 @@ import (
 	"net/http"
 	"testing"
 
+	"github.com/cli/go-gh/v2/internal/testutils"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestResolveOptions(t *testing.T) {
-	stubConfig(t, testConfigWithSocket())
+	testutils.StubConfig(t, testConfigWithSocket())
 
 	tests := []struct {
 		name          string
