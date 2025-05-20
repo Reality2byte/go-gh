@@ -2,9 +2,11 @@
 package browser
 
 import (
+	"fmt"
 	"io"
 	"os"
 	"os/exec"
+	"strings"
 
 	cliBrowser "github.com/cli/browser"
 	"github.com/cli/go-gh/v2/pkg/config"
@@ -45,6 +47,10 @@ func (b *Browser) Browse(url string) error {
 }
 
 func (b *Browser) browse(url string, env []string) error {
+	if !isPossibleProtocol(url) {
+		return fmt.Errorf("cannot browse due to unsupported protocol: %s", url)
+	}
+
 	if b.launcher == "" {
 		return cliBrowser.OpenURL(url)
 	}
@@ -77,4 +83,33 @@ func resolveLauncher() string {
 		}
 	}
 	return os.Getenv("BROWSER")
+}
+
+func (b *Browser) IsURL(u string) bool {
+	return isPossibleProtocol(u)
+}
+
+func isSupportedProtocol(u string) bool {
+	return strings.HasPrefix(u, "http:") ||
+		strings.HasPrefix(u, "https:") ||
+		strings.HasPrefix(u, "vscode:") ||
+		strings.HasPrefix(u, "vscode-insiders:")
+}
+
+func isPossibleProtocol(u string) bool {
+	if isSupportedProtocol(u) {
+		return true
+	}
+
+	// Disallow URLs that match existing files or directorys on the filesystem
+	if fileInfo, _ := os.Lstat(u); fileInfo != nil {
+		return false
+	}
+
+	// Disallow URLs using alternative `file:` protocol not located previously
+	if strings.HasPrefix(u, "file:") {
+		return false
+	}
+
+	return true
 }
