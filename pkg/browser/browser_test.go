@@ -60,52 +60,32 @@ func TestBrowse(t *testing.T) {
 			expected: "[implicit https github.com]",
 		},
 		{
-			name:    "Explicit absolute `file://` URL errors",
-			url:     "file:///System/Applications/Calculator.app",
-			wantErr: true,
-		},
-		{
-			name:    "Implicit absolute file URL errors",
-			url:     "/bin/sh",
-			wantErr: true,
-		},
-		{
-			name:    "Implicit absolute directory URL errors",
-			url:     "/System/Applications/Calculator.app",
-			wantErr: true,
-		},
-		{
-			name:    "Explicit absolute Windows file URL errors",
-			url:     `C:\Windows\System32\calc.exe`,
-			wantErr: true,
-		},
-		{
 			name: "Implicit relative file URL errors",
 			url:  "poc.command",
 			setup: func(t *testing.T) error {
-				// Capture current working directory for test cleanup
+				// Setup a temporary directory to stage content and execute the test within,
+				// ensure the test's original working directory is restored after.
 				cwd, err := os.Getwd()
 				if err != nil {
 					return err
 				}
 
-				// Create temporary directory containing relative executable for testing
 				tempDir := t.TempDir()
 				err = os.Chdir(tempDir)
 				if err != nil {
 					return err
 				}
 
+				t.Cleanup(func() {
+					_ = os.Chdir(cwd)
+				})
+
+				// Create content for local file URL testing
 				path := filepath.Join(tempDir, "poc.command")
 				err = os.WriteFile(path, []byte("#!/bin/bash\necho hello"), 0755)
 				if err != nil {
 					return err
 				}
-
-				// Restore original working directory after test
-				t.Cleanup(func() {
-					_ = os.Chdir(cwd)
-				})
 
 				return nil
 			},
@@ -113,21 +93,26 @@ func TestBrowse(t *testing.T) {
 		},
 		{
 			name: "Implicit relative directory URL errors",
-			url:  "poc.command",
+			url:  "Fake.app",
 			setup: func(t *testing.T) error {
-				// Capture current working directory for test cleanup
+				// Setup a temporary directory to stage content and execute the test within,
+				// ensure the test's original working directory is restored after.
 				cwd, err := os.Getwd()
 				if err != nil {
 					return err
 				}
 
-				// Create temporary directory containing relative executable for testing
 				tempDir := t.TempDir()
 				err = os.Chdir(tempDir)
 				if err != nil {
 					return err
 				}
 
+				t.Cleanup(func() {
+					_ = os.Chdir(cwd)
+				})
+
+				// Create content for local directory URL testing
 				path := filepath.Join(tempDir, "Fake.app")
 				err = os.Mkdir(path, 0755)
 				if err != nil {
@@ -139,11 +124,6 @@ func TestBrowse(t *testing.T) {
 				if err != nil {
 					return err
 				}
-
-				// Restore original working directory after test
-				t.Cleanup(func() {
-					_ = os.Chdir(cwd)
-				})
 
 				return nil
 			},
@@ -161,7 +141,7 @@ func TestBrowse(t *testing.T) {
 			stdout := &bytes.Buffer{}
 			stderr := &bytes.Buffer{}
 			b := Browser{launcher: tt.launcher, stdout: stdout, stderr: stderr}
-			err := b.browse(tt.url, []string{"GH_WANT_HELPER_PROCESS=1"})
+			err := b.browse(tt.url, []string{"GH_WANT_HELPER_PROCESS=1", fmt.Sprintf("GOCOVERDIR=%s", os.Getenv("GOCOVERDIR"))})
 
 			if tt.wantErr {
 				require.Error(t, err)

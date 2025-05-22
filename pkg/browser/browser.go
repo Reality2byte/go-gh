@@ -101,13 +101,13 @@ func isPossibleProtocol(u string) bool {
 		return true
 	}
 
-	// Disallow URLs that match existing files or directorys on the filesystem
-	if fileInfo, _ := os.Lstat(u); fileInfo != nil {
+	// Disallow URLs using alternative `file:` protocol not located previously
+	if strings.HasPrefix(u, "file:") {
 		return false
 	}
 
-	// Disallow URLs using alternative `file:` protocol not located previously
-	if strings.HasPrefix(u, "file:") {
+	// Disallow URLs that match existing files or directories on the filesystem
+	if fileInfo, _ := os.Lstat(u); fileInfo != nil {
 		return false
 	}
 
