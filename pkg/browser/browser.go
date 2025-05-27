@@ -47,8 +47,8 @@ func (b *Browser) Browse(url string) error {
 }
 
 func (b *Browser) browse(url string, env []string) error {
-	if !isPossibleProtocol(url) {
-		return fmt.Errorf("cannot browse due to unsupported protocol: %s", url)
+	if err := isPossibleProtocol(url); err != nil {
+		return err
 	}
 
 	if b.launcher == "" {
@@ -85,10 +85,6 @@ func resolveLauncher() string {
 	return os.Getenv("BROWSER")
 }
 
-func (b *Browser) IsURL(u string) bool {
-	return isPossibleProtocol(u)
-}
-
 func isSupportedProtocol(u string) bool {
 	return strings.HasPrefix(u, "http:") ||
 		strings.HasPrefix(u, "https:") ||
@@ -96,20 +92,28 @@ func isSupportedProtocol(u string) bool {
 		strings.HasPrefix(u, "vscode-insiders:")
 }
 
-func isPossibleProtocol(u string) bool {
+func isPossibleProtocol(u string) error {
 	if isSupportedProtocol(u) {
-		return true
+		return nil
 	}
 
-	// Disallow URLs using alternative `file:` protocol not located previously
+	// Disallow URLs using alternative `file:` protocol
 	if strings.HasPrefix(u, "file:") {
-		return false
+		return fmt.Errorf("opening files or directories is unsupported: %s", u)
 	}
 
 	// Disallow URLs that match existing files or directories on the filesystem
+	// as these could be executables or executed by the launcher browser due to
+	// the file extension and/or associated application.
 	if fileInfo, _ := os.Lstat(u); fileInfo != nil {
-		return false
+		return fmt.Errorf("opening files or directories is unsupported: %s", u)
 	}
 
-	return true
+	// Disallow URLs that match executables found in the user path.
+	exec, _ := safeexec.LookPath(u)
+	if exec != "" {
+		return fmt.Errorf("opening executables is unsupported: %s", u)
+	}
+
+	return nil
 }
