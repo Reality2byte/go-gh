@@ -65,6 +65,11 @@ func TestBrowse(t *testing.T) {
 			launcher: fmt.Sprintf("%q -test.run=TestHelperProcess -- implicit https", os.Args[0]),
 			expected: "[implicit https github.com]",
 		},
+		{
+			name:    "Explicit absolute `file://` URL errors",
+			url:     "file:///System/Applications/Calculator.app",
+			wantErr: true,
+		},
 	}
 
 	// Setup additional test scenarios covering OS-specific executables and directories
@@ -83,95 +88,7 @@ func TestBrowse(t *testing.T) {
 				wantErr: true,
 			},
 		}...)
-	case "darwin":
-		tests = append(tests, []browseTest{
-			{
-				name:    "Implicit absolute Mac OS file URL errors",
-				url:     "/bin/bash",
-				wantErr: true,
-			},
-			{
-				name:    "Implicit absolute Mac OS directory URL errors",
-				url:     "/bin",
-				wantErr: true,
-			},
-			{
-				name:    "Explicit absolute Mac OS `file://` URL errors",
-				url:     "file:///System/Applications/Calculator.app",
-				wantErr: true,
-			},
-			{
-				name: "Implicit relative file URL errors",
-				url:  "poc.command",
-				setup: func(t *testing.T) error {
-					// Setup a temporary directory to stage content and execute the test within,
-					// ensure the test's original working directory is restored after.
-					cwd, err := os.Getwd()
-					if err != nil {
-						return err
-					}
-
-					tempDir := t.TempDir()
-					err = os.Chdir(tempDir)
-					if err != nil {
-						return err
-					}
-
-					t.Cleanup(func() {
-						_ = os.Chdir(cwd)
-					})
-
-					// Create content for local file URL testing
-					path := filepath.Join(tempDir, "poc.command")
-					err = os.WriteFile(path, []byte("#!/bin/bash\necho hello"), 0755)
-					if err != nil {
-						return err
-					}
-
-					return nil
-				},
-				wantErr: true,
-			},
-			{
-				name: "Implicit relative directory URL errors",
-				url:  "Fake.app",
-				setup: func(t *testing.T) error {
-					// Setup a temporary directory to stage content and execute the test within,
-					// ensure the test's original working directory is restored after.
-					cwd, err := os.Getwd()
-					if err != nil {
-						return err
-					}
-
-					tempDir := t.TempDir()
-					err = os.Chdir(tempDir)
-					if err != nil {
-						return err
-					}
-
-					t.Cleanup(func() {
-						_ = os.Chdir(cwd)
-					})
-
-					// Create content for local directory URL testing
-					path := filepath.Join(tempDir, "Fake.app")
-					err = os.Mkdir(path, 0755)
-					if err != nil {
-						return err
-					}
-
-					path = filepath.Join(path, "poc.command")
-					err = os.WriteFile(path, []byte("#!/bin/bash\necho hello"), 0755)
-					if err != nil {
-						return err
-					}
-
-					return nil
-				},
-				wantErr: true,
-			},
-		}...)
-	// Default should handle common Unix/Linux scenarios outside of Mac OS.
+	// Default should handle common Unix/Linux scenarios including Mac OS.
 	default:
 		tests = append(tests, []browseTest{
 			{
@@ -185,7 +102,7 @@ func TestBrowse(t *testing.T) {
 				wantErr: true,
 			},
 			{
-				name: "Implicit relative file URL errors",
+				name: "Implicit relative Unix/Linux file URL errors",
 				url:  "poc.command",
 				setup: func(t *testing.T) error {
 					// Setup a temporary directory to stage content and execute the test within,
@@ -217,7 +134,7 @@ func TestBrowse(t *testing.T) {
 				wantErr: true,
 			},
 			{
-				name: "Implicit relative directory URL errors",
+				name: "Implicit relative Unix/Linux directory URL errors",
 				url:  "Fake.app",
 				setup: func(t *testing.T) error {
 					// Setup a temporary directory to stage content and execute the test within,

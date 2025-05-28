@@ -105,6 +105,9 @@ func isPossibleProtocol(u string) error {
 	// Disallow URLs that match existing files or directories on the filesystem
 	// as these could be executables or executed by the launcher browser due to
 	// the file extension and/or associated application.
+	//
+	// Symlinks should not be resolved in order to avoid broken links or other
+	// vulnerabilities trying to resolve them.
 	if fileInfo, _ := os.Lstat(u); fileInfo != nil {
 		return fmt.Errorf("opening files or directories is unsupported: %s", u)
 	}
