@@ -63,7 +63,7 @@ func TestBrowse(t *testing.T) {
 			name:     "Implicit `https` URL works",
 			url:      "github.com",
 			launcher: fmt.Sprintf("%q -test.run=TestHelperProcess -- implicit https", os.Args[0]),
-			expected: "[implicit https github.com]",
+			expected: "[implicit https https://github.com]",
 		},
 		{
 			name:    "Explicit absolute `file://` URL errors",

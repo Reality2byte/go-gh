@@ -4,9 +4,9 @@ package browser
 import (
 	"fmt"
 	"io"
+	"net/url"
 	"os"
 	"os/exec"
-	"strings"
 
 	cliBrowser "github.com/cli/browser"
 	"github.com/cli/go-gh/v2/pkg/config"
@@ -47,13 +47,20 @@ func (b *Browser) Browse(url string) error {
 }
 
 func (b *Browser) browse(url string, env []string) error {
-	if err := isPossibleProtocol(url); err != nil {
+	// Ensure the URL is supported including the scheme,
+	// overwrite `url` for use within the function.
+	urlParsed, err := isPossibleProtocol(url)
+	if err != nil {
 		return err
 	}
 
+	url = urlParsed.String()
+
+	// Use default `gh` browsing module for opening URL if not customized.
 	if b.launcher == "" {
 		return cliBrowser.OpenURL(url)
 	}
+
 	launcherArgs, err := shlex.Split(b.launcher)
 	if err != nil {
 		return err
@@ -85,21 +92,29 @@ func resolveLauncher() string {
 	return os.Getenv("BROWSER")
 }
 
-func isSupportedProtocol(u string) bool {
-	return strings.HasPrefix(u, "http:") ||
-		strings.HasPrefix(u, "https:") ||
-		strings.HasPrefix(u, "vscode:") ||
-		strings.HasPrefix(u, "vscode-insiders:")
+func isSupportedScheme(scheme string) bool {
+	switch scheme {
+	case "http", "https", "vscode", "vscode-insiders":
+		return true
+	default:
+		return false
+	}
 }
 
-func isPossibleProtocol(u string) error {
-	if isSupportedProtocol(u) {
-		return nil
+func isPossibleProtocol(u string) (*url.URL, error) {
+	// Parse URL for known supported schemes before handling unknown cases.
+	urlParsed, err := url.Parse(u)
+	if err != nil {
+		return nil, fmt.Errorf("opening unparsable URL is unsupported: %s", u)
 	}
 
-	// Disallow URLs using alternative `file:` protocol
-	if strings.HasPrefix(u, "file:") {
-		return fmt.Errorf("opening files or directories is unsupported: %s", u)
+	if isSupportedScheme(urlParsed.Scheme) {
+		return urlParsed, nil
+	}
+
+	// Disallow any unrecognized URL schemes if explicitly present.
+	if urlParsed.Scheme != "" {
+		return nil, fmt.Errorf("opening unsupport URL scheme: %s", u)
 	}
 
 	// Disallow URLs that match existing files or directories on the filesystem
@@ -109,14 +124,16 @@ func isPossibleProtocol(u string) error {
 	// Symlinks should not be resolved in order to avoid broken links or other
 	// vulnerabilities trying to resolve them.
 	if fileInfo, _ := os.Lstat(u); fileInfo != nil {
-		return fmt.Errorf("opening files or directories is unsupported: %s", u)
+		return nil, fmt.Errorf("opening files or directories is unsupported: %s", u)
 	}
 
 	// Disallow URLs that match executables found in the user path.
 	exec, _ := safeexec.LookPath(u)
 	if exec != "" {
-		return fmt.Errorf("opening executables is unsupported: %s", u)
+		return nil, fmt.Errorf("opening executables is unsupported: %s", u)
 	}
 
-	return nil
+	// Otherwise, assume HTTP URL using `https` to ensure secure browsing.
+	urlParsed.Scheme = "https"
+	return urlParsed, nil
 }
