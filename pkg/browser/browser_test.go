@@ -48,6 +48,12 @@ func TestBrowse(t *testing.T) {
 			expected: "[explicit https https://github.com]",
 		},
 		{
+			name:     "Explicit `HTTPS` URL works",
+			url:      "HTTPS://github.com",
+			launcher: fmt.Sprintf("%q -test.run=TestHelperProcess -- explicit HTTPS", os.Args[0]),
+			expected: "[explicit HTTPS https://github.com]",
+		},
+		{
 			name:     "Explicit `vscode` URL works",
 			url:      "vscode:extension/GitHub.copilot",
 			launcher: fmt.Sprintf("%q -test.run=TestHelperProcess -- explicit vscode", os.Args[0]),
