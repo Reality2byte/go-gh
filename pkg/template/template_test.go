@@ -409,6 +409,14 @@ func TestExecute(t *testing.T) {
 			},
 			wantW: "true",
 		},
+		{
+			name: "replace",
+			args: args{
+				json:     strings.NewReader(`{"product":"GitHub CLI\n"}`),
+				template: `{{ .product | replace "\n" "" }}`,
+			},
+			wantW: "GitHub CLI",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

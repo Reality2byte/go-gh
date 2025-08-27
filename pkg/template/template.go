@@ -272,6 +272,7 @@ func sprigFuncMap() template.FuncMap {
 		"hasPrefix",
 		"hasSuffix",
 		"regexMatch",
+		"replace",
 	}
 	txtFuncMap := sprig.TxtFuncMap()
 	funcMap := template.FuncMap{}
