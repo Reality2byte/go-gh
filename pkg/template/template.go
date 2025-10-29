@@ -13,6 +13,7 @@ import (
 	"text/template"
 	"time"
 
+	"github.com/Masterminds/sprig/v3"
 	"github.com/cli/go-gh/v2/pkg/tableprinter"
 	"github.com/cli/go-gh/v2/pkg/text"
 	color "github.com/mgutz/ansi"
@@ -83,6 +84,11 @@ func (t *Template) Parse(tmpl string) error {
 	if !t.colorEnabled {
 		templateFuncs["autocolor"] = autoColorFunc
 	}
+
+	for name, f := range sprigFuncMap() {
+		templateFuncs[name] = f
+	}
+
 	for name, f := range t.funcs {
 		templateFuncs[name] = f
 	}
@@ -258,4 +264,20 @@ func hyperlinkFunc(link, text string) string {
 
 	// See https://gist.github.com/egmontkob/eb114294efbcd5adb1944c9f3cb5feda
 	return fmt.Sprintf("\x1b]8;;%s\x1b\\%s\x1b]8;;\x1b\\", link, text)
+}
+
+func sprigFuncMap() template.FuncMap {
+	funcNames := []string{
+		"contains",
+		"hasPrefix",
+		"hasSuffix",
+		"regexMatch",
+		"replace",
+	}
+	txtFuncMap := sprig.TxtFuncMap()
+	funcMap := template.FuncMap{}
+	for _, name := range funcNames {
+		funcMap[name] = txtFuncMap[name]
+	}
+	return funcMap
 }

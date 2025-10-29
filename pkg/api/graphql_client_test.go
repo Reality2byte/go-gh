@@ -7,12 +7,13 @@ import (
 	"testing"
 	"time"
 
+	"github.com/cli/go-gh/v2/internal/testutils"
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/h2non/gock.v1"
 )
 
 func TestGraphQLClient(t *testing.T) {
-	stubConfig(t, testConfig())
+	testutils.StubConfig(t, testConfig())
 	t.Cleanup(gock.Off)
 
 	gock.New("https://api.github.com").
@@ -34,7 +35,7 @@ func TestGraphQLClient(t *testing.T) {
 }
 
 func TestGraphQLClientDoError(t *testing.T) {
-	stubConfig(t, testConfig())
+	testutils.StubConfig(t, testConfig())
 	t.Cleanup(gock.Off)
 
 	gock.New("https://api.github.com").
@@ -56,7 +57,7 @@ func TestGraphQLClientDoError(t *testing.T) {
 }
 
 func TestGraphQLClientQueryError(t *testing.T) {
-	stubConfig(t, testConfig())
+	testutils.StubConfig(t, testConfig())
 	t.Cleanup(gock.Off)
 
 	gock.New("https://api.github.com").
@@ -78,7 +79,7 @@ func TestGraphQLClientQueryError(t *testing.T) {
 }
 
 func TestGraphQLClientMutateError(t *testing.T) {
-	stubConfig(t, testConfig())
+	testutils.StubConfig(t, testConfig())
 	t.Cleanup(gock.Off)
 
 	gock.New("https://api.github.com").
@@ -292,6 +293,11 @@ func TestGraphQLEndpoint(t *testing.T) {
 			name:         "enterprise",
 			host:         "enterprise.com",
 			wantEndpoint: "https://enterprise.com/api/graphql",
+		},
+		{
+			name:         "tenant",
+			host:         "tenant.ghe.com",
+			wantEndpoint: "https://api.tenant.ghe.com/graphql",
 		},
 	}
 

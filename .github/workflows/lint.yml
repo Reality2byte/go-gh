@@ -7,13 +7,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Set up Go
-        uses: actions/setup-go@v3
-        with:
-          go-version: "1.21"
-
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
 
       - name: Check dependencies
         run: |
@@ -21,6 +21,7 @@ jobs:
           git diff --exit-code go.mod
 
       - name: Lint
-        uses: golangci/golangci-lint-action@v3.4.0
+        uses: golangci/golangci-lint-action@v6
         with:
-          version: v1.54
+          version: v1.64
+          problem-matchers: true

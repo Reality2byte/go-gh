@@ -3,12 +3,12 @@ package repository
 import (
 	"testing"
 
-	"github.com/cli/go-gh/v2/pkg/config"
+	"github.com/cli/go-gh/v2/internal/testutils"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestParse(t *testing.T) {
-	stubConfig(t, "")
+	testutils.StubConfig(t, "")
 
 	tests := []struct {
 		name         string
@@ -106,7 +106,7 @@ hosts:
     oauth_token: yyyyyyyyyyyyyyyyyyyy
     git_protocol: https
 `
-	stubConfig(t, cfgStr)
+	testutils.StubConfig(t, cfgStr)
 	r, err := Parse("OWNER/REPO")
 	assert.NoError(t, err)
 	assert.Equal(t, "enterprise.com", r.Host)
@@ -188,15 +188,4 @@ func TestParseWithHost(t *testing.T) {
 			assert.Equal(t, tt.wantName, r.Name)
 		})
 	}
-}
-
-func stubConfig(t *testing.T, cfgStr string) {
-	t.Helper()
-	old := config.Read
-	config.Read = func(_ *config.Config) (*config.Config, error) {
-		return config.ReadFromString(cfgStr), nil
-	}
-	t.Cleanup(func() {
-		config.Read = old
-	})
 }
