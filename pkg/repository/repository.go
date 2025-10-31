@@ -67,7 +67,7 @@ func Parse(s string) (Repository, error) {
 	}
 }
 
-// Parse extracts the repository information from the following
+// ParseWithHost extracts the repository information from the following
 // string formats: "OWNER/REPO", "HOST/OWNER/REPO", and a full URL.
 // If the format does not specify a host, use the host provided.
 func ParseWithHost(s, host string) (Repository, error) {

@@ -16,7 +16,7 @@ import (
 	"github.com/itchyny/gojq"
 )
 
-// Evaluate a jq expression against an input and write it to an output.
+// Evaluate evaluates a jq expression against an input and write it to an output.
 // Any top-level scalar values produced by the jq expression are written out
 // directly, as raw values and not as JSON scalars, similar to how jq --raw
 // works.
@@ -24,7 +24,7 @@ func Evaluate(input io.Reader, output io.Writer, expr string) error {
 	return EvaluateFormatted(input, output, expr, "", false)
 }
 
-// Evaluate a jq expression against an input and write it to an output,
+// EvaluateFormatted evaluates a jq expression against an input and write it to an output,
 // optionally with indentation and colorization.  Any top-level scalar values
 // produced by the jq expression are written out directly, as raw values and not
 // as JSON scalars, similar to how jq --raw works.

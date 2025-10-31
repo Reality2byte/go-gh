@@ -1,5 +1,3 @@
-// Package term provides information about the terminal that the current process is connected to (if any),
-// for example measuring the dimensions of the terminal and inspecting whether it's safe to output color.
 package term
 
 import (

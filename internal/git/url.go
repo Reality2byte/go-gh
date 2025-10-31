@@ -64,7 +64,7 @@ func ParseURL(rawURL string) (u *url.URL, err error) {
 	return
 }
 
-// Extract GitHub repository information from a git remote URL.
+// RepoInfoFromURL extracts GitHub repository information from a git remote URL.
 func RepoInfoFromURL(u *url.URL) (host string, owner string, name string, err error) {
 	if u.Hostname() == "" {
 		return "", "", "", fmt.Errorf("no hostname detected")
