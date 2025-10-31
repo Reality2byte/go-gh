@@ -25,7 +25,7 @@ func WithoutIndentation() glamour.TermRendererOption {
 	return glamour.WithStylesFromJSONBytes(overrides)
 }
 
-// WithoutWrap is a rendering option that set the character limit for soft wraping the markdown rendering.
+// WithWrap is a rendering option that set the character limit for soft wrapping the markdown rendering.
 func WithWrap(w int) glamour.TermRendererOption {
 	return glamour.WithWordWrap(w)
 }
