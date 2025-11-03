@@ -98,6 +98,8 @@ func matchPath(p, expect string) bool {
 }
 
 // HandleHTTPError parses a http.Response into a HTTPError.
+//
+// The function attempts to read the response's body, but it does not close it.
 func HandleHTTPError(resp *http.Response) error {
 	httpError := &HTTPError{
 		Headers:    resp.Header,
