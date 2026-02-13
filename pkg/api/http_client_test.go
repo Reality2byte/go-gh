@@ -122,6 +122,7 @@ func TestNewHTTPClient(t *testing.T) {
 			wantHeaders: func() http.Header {
 				h := defaultHeaders()
 				h.Del(accept)
+				h.Del(apiVersion)
 				h.Del(contentType)
 				h.Del(timeZone)
 				h.Del(userAgent)
@@ -169,6 +170,7 @@ func defaultHeaders() http.Header {
 	h := http.Header{}
 	a := "application/vnd.github.merge-info-preview+json"
 	a += ", application/vnd.github.nebula-preview"
+	h.Set(apiVersion, apiVersionValue)
 	h.Set(contentType, jsonContentType)
 	h.Set(userAgent, "go-gh")
 	h.Set(authorization, fmt.Sprintf("token %s", "oauth_token"))

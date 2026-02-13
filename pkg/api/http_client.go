@@ -22,6 +22,8 @@ import (
 const (
 	accept          = "Accept"
 	authorization   = "Authorization"
+	apiVersion      = "X-GitHub-Api-Version"
+	apiVersionValue = "2022-11-28"
 	contentType     = "Content-Type"
 	github          = "github.com"
 	jsonContentType = "application/json; charset=utf-8"
@@ -162,6 +164,9 @@ func resolveHeaders(headers map[string]string) {
 		if tz != "" {
 			headers[timeZone] = tz
 		}
+	}
+	if _, ok := headers[apiVersion]; !ok {
+		headers[apiVersion] = apiVersionValue
 	}
 	if _, ok := headers[accept]; !ok {
 		// Preview for PullRequest.mergeStateStatus.
