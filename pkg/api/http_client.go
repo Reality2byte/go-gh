@@ -114,7 +114,7 @@ func NewHTTPClient(opts ClientOptions) (*http.Client, error) {
 		opts.Headers = map[string]string{}
 	}
 	if !opts.SkipDefaultHeaders {
-		resolveHeaders(opts.Headers)
+		setDefaultHeaders(opts.Headers)
 	}
 	transport = newHeaderRoundTripper(opts.Host, opts.AuthToken, opts.Headers, transport)
 
@@ -143,7 +143,7 @@ type headerRoundTripper struct {
 	rt      http.RoundTripper
 }
 
-func resolveHeaders(headers map[string]string) {
+func setDefaultHeaders(headers map[string]string) {
 	if _, ok := headers[contentType]; !ok {
 		headers[contentType] = jsonContentType
 	}
